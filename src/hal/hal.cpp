@@ -37,9 +37,22 @@ static void hal_io_init () {
 }
 
 // val == 1  => tx 1
-void hal_pin_rxtx (u1_t val) {
-    if (lmic_pins.rxtx != LMIC_UNUSED_PIN)
-        digitalWrite(lmic_pins.rxtx, val);
+void hal_pin_rxtx (u1_t val)
+{
+	if (lmic_pins.rxtx == LMIC_UNUSED_PIN)
+		return;
+
+	// Hack for cases where RX and TX pins are separate.
+	if (val == 1)
+	{
+		digitalWrite(33, 0);
+		digitalWrite(lmic_pins.rxtx, 1);
+	}
+	else
+	{
+		digitalWrite(lmic_pins.rxtx, 0);
+		digitalWrite(33, 1);
+	}
 }
 
 // set radio RST pin to given value (or keep floating!)
